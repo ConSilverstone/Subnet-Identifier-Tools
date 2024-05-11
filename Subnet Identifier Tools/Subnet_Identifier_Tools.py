@@ -96,15 +96,13 @@ def cidr_math (cidr_mask):
        for j, elem in enumerate (binary_scale):          
            if mask_list[i] - binary_scale[j] > 0:
                local_string_cidr = local_string_cidr + "1"
-           elif mask_list[i] - binary_scale[j] < 0:
+           else:
                local_string_cidr = local_string_cidr + "0"
-           else: #A exception has happened and we need to notify of this.
-               print("There was a fault when trying to calculate the cidr notation and it may not display correctly.")
+   print(local_string_cidr)            
     #Now take that local string and count for the cidr
    cidr_mask = local_string_cidr.count("1")
    
    return cidr_mask
-
 
 def subnet_addresses_math (broadcast_address, network_address, first_address, last_address):
     
@@ -117,19 +115,26 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
             if ipv4_list[i] - binary_scale[j] > 0:
                 local_string_ip = local_string_ip + "1"
             elif ipv4_list[i] - binary_scale[j] < 0:
-                local_string_ip = local_string_ip + "1"
+                local_string_ip = local_string_ip + "0"
             else: #A exception has happened and we need to notify of this.
                 print("There was a fault when trying to calculate the subnet address and it may not display correctly.")
     
+    ##We have a section of this function up and coming that requires us to replace items in a string by creating a new one since they are immutable here is the function that is going to do that
+    def replace(string, position, character):
+        return string[:int(position)] + character + string[int(position)+1:]
+        
     local_broadcast_string = local_string_ip
     local_network_string = local_string_ip
-    
+
     for i in local_broadcast_string[cidr_mask - 1 : 32]:
-        local_broadcast_string[i] = "1"
+        replace(local_broadcast_string, local_broadcast_string[int(i)], "1")
         
     for i in local_network_string[cidr_mask -1 : 32]:
-        local_network_string[i] = "0"
-        
+        replace(local_network_string, local_network_string[int(i)], "0")
+    
+    print(local_broadcast_string)
+    print(local_network_string)
+    
     #Now we need to take our cleaned local_x_strings and turn those binary values back into base 10
     #First the broadcast address    
     for i in local_broadcast_string [0 : 7]:
