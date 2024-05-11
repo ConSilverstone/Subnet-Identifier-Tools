@@ -4,28 +4,31 @@ from pickle import APPEND #adding content on the end of lists/strings
 from re import A
 
 classful_range = {"A" : 126, "B" : 191, "C" : 223, "D" : 239, "E" : 255} #A library containg the last usable address from the first octect to find the class type
-ipv4_list = () #The user will change this by entering a ipv4 address they are trying to find information on
-mask_list = () #The user will change this by entering a subnet mash they are trying to find informtaion on
+ipv4_list = [] #The user will change this by entering a ipv4 address they are trying to find information on
+mask_list = [] #The user will change this by entering a subnet mash they are trying to find informtaion on
 class_type = "" #A blank string that will be used to display the class of network, used in conjunction with classful_range
-binary_scale = (128, 64, 32, 16, 8, 4, 2, 1) #our binary scale which we will use to convert to and from binary and base 10
+binary_scale = [128, 64, 32, 16, 8, 4, 2, 1] #our binary scale which we will use to convert to and from binary and base 10
 ##Calculated variables in functions##
 cidr_mask = 0
-broadcast_address = ()
-network_address = ()
-first_address = ()
-last_address = ()
+broadcast_address = []
+network_address = []
+first_address = []
+last_address = []
 total_hosts = 0
 
+##print a greeting up here so it only prints once##
+print("Thank you for using the Subnet Identifier Tool, please enter the IPv4 address you would like information on.")
+
 def ip_input (ipv4_list):
-    ipv4_string = input("Thank you for using the Subnet Identifier Tool, please enter the IPv4 address you would like information on.")
+    ipv4_string = input()
     
     #Error Handling#
-    if ipv4_string.len() > 16 or ipv4_string.len() < 8:
+    if len(ipv4_string) > 16 or len(ipv4_string) < 8:
         print("Sorry but that was not a valid IPv4 address, a valid address should be between 8 and 16 characters in length (0.0.0.1 or 255.255.255.255) for example.")
-        ip_input()
+        ip_input(ipv4_list)
     elif ipv4_string.count(".") != 4:
-        print("Sorry but that was not a valid IPv4 address, a valid address should have 4 full stops, one after every 4 numbers (192.168.1.0 or 127.16.0.0) for example")
-        ip_input()
+        print("Sorry but that was not a valid IPv4 address, a valid address should have 4 full stops, one after every octet (192.168.1.0 or 127.16.0.0) for example")
+        ip_input(ipv4_list)
     else: #everything seems fine lets split the string into a list we can work with
         ipv4_string.split(".")
         for i in ipv4_string:
@@ -37,12 +40,12 @@ def mask_input (mask_list):
     mask_string = input("Now please enter the subnet mask for the same network as the IPv4 address.")
     
     #Error Handling#
-    if mask_string.len() > 16 or mask_string.len() < 8:
+    if len(mask_string) > 16 or len(mask_string) < 8:
         print("Sorry but that was not a valid IPv4 mask, a valid mask should be between 8 and 16 characters in length (0.0.0.1 or 255.255.255.255) for example.")
-        mask_input()
+        mask_input(mask_list)
     elif mask_string.count(".") != 4:
         print("Sorry but that was not a valid IPv4 mask, a valid mask should have 4 full stops, one after every 4 numbers (255.0.0.0 or 255.255.255.0) for example")
-        mask_input()
+        mask_input(mask_list)
     else: #everything seems fine lets split the string into a list we can work with
         mask_string.split(".")
         for i in mask_string:
@@ -175,8 +178,15 @@ def total_hosts_math (total_hosts):
     total_hosts = (local_base_two ** local_int) - 2 #-2 for network and broadcast addresses
     return total_hosts
 
-####Finally we can display everything we have been working on!####
+##Call Functions##
+ip_input(ipv4_list)
+mask_input(mask_list)
+ip_class(class_type)
+cidr_math(cidr_mask)
+subnet_addresses_math(broadcast_address, network_address, first_address, last_address)
+total_hosts_math(total_hosts_math)
 
+####Finally we can display everything we have been working on!####
 print("Subnet Identification Information:")
 print("IPv4 Address: " + ipv4_list[0] + "." + ipv4_list[1] + "." + ipv4_list[2] + "." + ipv4_list[3])
 print("Mask: " + mask_list[0] + "." + mask_list[1] + "." + mask_list[2] + "." + mask_list[3])
