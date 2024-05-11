@@ -1,3 +1,4 @@
+####The Mythical Gryphon / ConSilverstone####
 ####Initilise Variables####
 from pickle import APPEND #adding content on the end of lists/strings
 from re import A
@@ -125,7 +126,63 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
         local_network_string[i] = "0"
         
     #Now we need to take our cleaned local_x_strings and turn those binary values back into base 10
+    #First the broadcast address    
     for i in local_broadcast_string [0 : 7]:
         if i == "1":
             broadcast_address[0] = broadcast_address[0] + binary_scale[i]
-        
+    for i in local_broadcast_string [8 : 15]:
+        if i == "1":
+            broadcast_address[1] = broadcast_address[1] + binary_scale[i]
+    for i in local_broadcast_string [16 : 23]:
+        if i == "1":
+            broadcast_address[2] = broadcast_address[2] + binary_scale[i]
+    for i in local_broadcast_string [24 : 31]:
+        if i == "1":
+            broadcast_address[3] = broadcast_address[3] + binary_scale[i]
+    #Second the network address
+    for i in local_network_string [0 : 7]:
+        if i == "1":
+            network_address[0] = network_address[0] + binary_scale[i]
+    for i in local_network_string [8 : 15]:
+        if i == "1":
+            network_address[1] = network_address[1] + binary_scale[i]
+    for i in local_network_string [16 : 23]:
+        if i == "1":
+            network_address[2] = network_address[2] + binary_scale[i]
+    for i in local_network_string [24 : 31]:
+        if i == "1":
+            network_address[3] = network_address[3] + binary_scale[i]       
+    
+    #Now that the lists are correct let us add the correct values to the first and last address        
+    first_address[0:2] == network_address[0:2]
+    last_address[0:2] == network_address[0:2]
+    #The first three octets are gonna match the now accurate network and broadcast addresses, we just need to add or take away 1 respectively
+    first_address[3] = network_address[3] + 1
+    last_address[3] = broadcast_address[3] - 1
+    
+    return network_address
+    return broadcast_address
+    return first_address
+    return last_address
+
+#Last piece of math is to calculate the total usable addresses in this subnet
+def total_hosts_math (total_hosts):
+    
+    #Lets create local ints to do the math with
+    local_int = 32 - cidr_mask
+    local_base_two = 2 #as bits grow in powers of two (on, off)
+    
+    total_hosts = (local_base_two ** local_int) - 2 #-2 for network and broadcast addresses
+    return total_hosts
+
+####Finally we can display everything we have been working on!####
+
+print("Subnet Identification Information:")
+print("IPv4 Address: " + ipv4_list[0] + "." + ipv4_list[1] + "." + ipv4_list[2] + "." + ipv4_list[3])
+print("Mask: " + mask_list[0] + "." + mask_list[1] + "." + mask_list[2] + "." + mask_list[3])
+print("Cidr Notation: /" + cidr_mask)
+print("This IPv4 Network Address: " + network_address[0] + "." + network_address[1] + "." + network_address[2] + "." + network_address[3])
+print("This IPv4 Broadcast Address: " + broadcast_address[0] + "." + broadcast_address[1] + "." + broadcast_address[2] + "." + broadcast_address[3])
+print("Subnets first usable address: " + first_address[0] + "." + first_address[1] + "." + first_address[2] + "." + first_address[3])
+print("Subnets last usable address: " + last_address[0] + "." + last_address[1] + "." + last_address[2] + "." + last_address[3])
+print("Thank you for using the Subnet_Identifier_Tool, happy building!")
