@@ -3,7 +3,7 @@
 from pickle import APPEND #adding content on the end of lists/strings
 from re import A
 
-classful_range = {"A" : 126, "B" : 191, "C" : 223, "D" : 239, "E" : 255} #A library containg the last usable address from the first octect to find the class type
+classful_range = {"A": 126, "B": 191, "C": 223, "D": 239, "E": 255} #A dictonary containg the last usable address from the first octect to find the class type
 ipv4_list = [] #The user will change this by entering a ipv4 address they are trying to find information on
 mask_list = [] #The user will change this by entering a subnet mash they are trying to find informtaion on
 class_type = "" #A blank string that will be used to display the class of network, used in conjunction with classful_range
@@ -16,9 +16,7 @@ first_address = []
 last_address = []
 total_hosts = 0
 
-##print a greeting up here so it only prints once##
-print("Thank you for using the Subnet Identifier Tool, please enter the IPv4 address you would like information on.")
-
+##Lets take input for the users IPv4 Address##
 def ip_input (ipv4_list):
     ipv4_string = input()
     
@@ -30,14 +28,16 @@ def ip_input (ipv4_list):
         print("Sorry but that was not a valid IPv4 address, a valid address should have 4 full stops, one after every octet (192.168.1.0 or 127.16.0.0) for example")
         ip_input(ipv4_list)
     else: #everything seems fine lets split the string into a list we can work with
-        ipv4_string.split(".")
-        for i in ipv4_string:
-            ipv4_list.append(i)
+        ipv4_string_cleaned = ipv4_string.split(".") ##Take the raw input and clean it up using the full stops
+        for i in ipv4_string_cleaned:
+            if i != ".": ##We want to discard the full stops for the list
+                ipv4_list.append(int(i))
     return ipv4_list
 
+##Lets take input for the users IPv4 Mask##
 def mask_input (mask_list):
 
-    mask_string = input("Now please enter the subnet mask for the same network as the IPv4 address.")
+    mask_string = input()
     
     #Error Handling#
     if len(mask_string) > 16 or len(mask_string) < 8:
@@ -47,9 +47,10 @@ def mask_input (mask_list):
         print("Sorry but that was not a valid IPv4 mask, a valid mask should have 4 full stops, one after every 4 numbers (255.0.0.0 or 255.255.255.0) for example")
         mask_input(mask_list)
     else: #everything seems fine lets split the string into a list we can work with
-        mask_string.split(".")
-        for i in mask_string:
-            mask_list.append(i)
+        mask_string_cleaned = mask_string.split(".") ##Take the raw input and clean it up using the full stops
+        for i in mask_string_cleaned:
+            if i != ".": ##We want to discard the full stops for the list
+                mask_list.append(int(i))
     return mask_list
 
 #####Calculations####
@@ -58,26 +59,26 @@ def ip_class (class_type):
     
     #Lets create a local int containing the first octect of the user's ipv4 address so we can compare it to a class type
     local_int = ipv4_list[0]
-    
+    print(type(local_int))
+    print(local_int)
     #Now to compare
-    if local_int < classful_range.value("A"):
+    if local_int < classful_range.get("A", "No Class Given"):
         class_type = "A"
         
-    elif local_int > classful_range.value("A") and local_int < classful_range.value("B") and local_int != 127:
+    elif local_int > classful_range.get("A", "No Class Given") and local_int < classful_range.get("B", "No Class Given") and local_int != 127:
         class_type = "B"
         
-    elif local_int > classful_range.value("C") and local_int < classful_range.value("D"):
+    elif local_int > classful_range.get("B", "No Class Given") and local_int < classful_range.get("C", "No Class Given"):
         class_type = "C"
         
-    elif local_int > classful_range.value("D") and local_int < classful_range.value("E") and local_int != 127:
+    elif local_int > classful_range.get("C", "No Class Given") and local_int < classful_range.get("D", "No Class Given"):
         class_type = "This is a multicast address with class D, it is ill advised to use this for general subnetting."
         
-    elif local_int > classful_range.value("E") and local_int < 255:
-        class_type = "This is a experemental address with class E, it is ill advised to use this for general subnetting."
-    
+    elif local_int > classful_range.get("D", "No Class Given") and local_int < classful_range.get("E", "No Class Given"):
+        class_type = "This is a experemental address with class E, it is ill advised to use this for general subnetting."   
+        
     elif local_int == 127:
-        class_type = "This is the loopback address range for local address, however the class B 127.16.0.0 to 127.31.255.255 address range is still usable for local subnetting."
-    
+        class_type = "This is the loopback address range for local address, however the class B 127.16.0.0 to 127.31.255.255 address range is still usable for local subnetting."   
     #If nothing above works then there is a fault with the user's input as it is likely out of range.
     else:
         print("There was a problem with presenting the IPv4 calculation, please ensure that the IPv4 address is within the ranges of 0 to 255 n each octect.")
@@ -178,8 +179,11 @@ def total_hosts_math (total_hosts):
     total_hosts = (local_base_two ** local_int) - 2 #-2 for network and broadcast addresses
     return total_hosts
 
-##Call Functions##
+##Call Functions##And notify the user of what function they are on##
+##print next line here so it only prints once##
+print("Thank you for using the Subnet Identifier Tool, please enter the IPv4 address you would like information on.")
 ip_input(ipv4_list)
+print("Now please enter the subnet mask for the same network as the IPv4 address.")
 mask_input(mask_list)
 ip_class(class_type)
 cidr_math(cidr_mask)
