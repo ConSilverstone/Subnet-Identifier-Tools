@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Subnet Identifier Tools", "Subnet Identifier Tools\Subnet Identifier Tools.pyproj", "{48330154-D211-4765-8DFD-BCE38558BEED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48330154-D211-4765-8DFD-BCE38558BEED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48330154-D211-4765-8DFD-BCE38558BEED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F23A9AF8-2053-4562-A772-C95F2C84D365}
+	EndGlobalSection
+EndGlobal
