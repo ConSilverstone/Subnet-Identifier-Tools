@@ -26,7 +26,7 @@ def ip_input (ipv4_list):
     if len(ipv4_string) > 16 or len(ipv4_string) < 8:
         print("Sorry but that was not a valid IPv4 address, a valid address should be between 8 and 16 characters in length (0.0.0.1 or 255.255.255.255) for example.")
         ip_input(ipv4_list)
-    elif ipv4_string.count(".") != 4:
+    elif ipv4_string.count(".") != 3:
         print("Sorry but that was not a valid IPv4 address, a valid address should have 4 full stops, one after every octet (192.168.1.0 or 127.16.0.0) for example")
         ip_input(ipv4_list)
     else: #everything seems fine lets split the string into a list we can work with
@@ -43,7 +43,7 @@ def mask_input (mask_list):
     if len(mask_string) > 16 or len(mask_string) < 8:
         print("Sorry but that was not a valid IPv4 mask, a valid mask should be between 8 and 16 characters in length (0.0.0.1 or 255.255.255.255) for example.")
         mask_input(mask_list)
-    elif mask_string.count(".") != 4:
+    elif mask_string.count(".") != 3:
         print("Sorry but that was not a valid IPv4 mask, a valid mask should have 4 full stops, one after every 4 numbers (255.0.0.0 or 255.255.255.0) for example")
         mask_input(mask_list)
     else: #everything seems fine lets split the string into a list we can work with
