@@ -1,7 +1,8 @@
 ####The Mythical Gryphon / ConSilverstone####
 ####Initilise Variables####
-from pickle import APPEND #adding content on the end of lists/strings
-from re import A
+from math import remainder
+from pickle import APPEND #adding content on the end of lists
+from itertools import cycle #To help us cycle through lists of different lengths
 
 classful_range = {"A": 126, "B": 191, "C": 223, "D": 239, "E": 255} #A dictonary containg the last usable address from the first octect to find the class type
 ipv4_list = [] #The user will change this by entering a ipv4 address they are trying to find information on
@@ -59,8 +60,7 @@ def ip_class (class_type):
     
     #Lets create a local int containing the first octect of the user's ipv4 address so we can compare it to a class type
     local_int = ipv4_list[0]
-    print(type(local_int))
-    print(local_int)
+    
     #Now to compare
     if local_int < classful_range.get("A", "No Class Given"):
         class_type = "A"
@@ -91,15 +91,15 @@ def cidr_math (cidr_mask):
    #Local string for converting with
    local_string_cidr = ""
    
-   for i in mask_list:
-       for i in binary_scale:
-           if mask_list[i] - binary_scale[i] > 0:
-               local_string_cidr.append("1")
-           elif mask_list[i] - binary_scale[i] < 0:
-               local_string_cidr.append("0")
+   #Now we need to cycle through the users base 10 input to create a binary string that we can show the cidr notation with.
+   for i, elem in enumerate (mask_list):
+       for j, elem in enumerate (binary_scale):          
+           if mask_list[i] - binary_scale[j] > 0:
+               local_string_cidr = local_string_cidr + "1"
+           elif mask_list[i] - binary_scale[j] < 0:
+               local_string_cidr = local_string_cidr + "0"
            else: #A exception has happened and we need to notify of this.
                print("There was a fault when trying to calculate the cidr notation and it may not display correctly.")
-   
     #Now take that local string and count for the cidr
    cidr_mask = local_string_cidr.count("1")
    
@@ -112,13 +112,14 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
     local_string_ip = ""
     
     #Now we need to cycle through the users base 10 input to create a binary string that we can subnet with.
-    for i in binary_scale:
-        if ipv4_list[i] - binary_scale[i] > 0:
-            local_string_ip.append("1")
-        elif ipv4_list[i] - binary_scale[i] < 0:
-            local_string_ip.append("0")
-        else: #A exception has happened and we need to notify of this.
-            print("There was a fault when trying to calculate the subnet address and it may not display correctly.")
+    for i, elem in enumerate (ipv4_list):
+        for j, elem in enumerate (binary_scale):
+            if ipv4_list[i] - binary_scale[j] > 0:
+                local_string_ip = local_string_ip + "1"
+            elif ipv4_list[i] - binary_scale[j] < 0:
+                local_string_ip = local_string_ip + "1"
+            else: #A exception has happened and we need to notify of this.
+                print("There was a fault when trying to calculate the subnet address and it may not display correctly.")
     
     local_broadcast_string = local_string_ip
     local_network_string = local_string_ip
