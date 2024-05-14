@@ -134,7 +134,7 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
     for i in range (0, remaining_bits):
         local_broadcast_string = local_broadcast_string + "1"
         local_network_string = local_network_string + "0"
-
+    print(local_broadcast_string)
     #Now we need to take our local_x_strings and turn them into lists of binary numbers to convert back into base 10
     broadcast_binary_list = []
     network_binary_list = []
@@ -142,48 +142,57 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
         broadcast_binary_list.append(x)
     for x in local_network_string:
         network_binary_list.append(x)
-        
+    
+    ##We need to set some things up, first we want to reset the binary scale after every 8 bits
+    ##We need to start from 1 to make the binary scale work from 0 to 8 (i starts at 0)
     binary_scale_enumerator = 0
+    start_from_1 = 1
 
     #First the broadcast address    
-    for i, elem in enumerate (broadcast_binary_list, 0):
-        if i <= 8:
+    for i, elem in enumerate (broadcast_binary_list):
+        if start_from_1 <= 8:
             if broadcast_binary_list[i] == "1":
                 broadcast_address[0] = broadcast_address[0] + binary_scale[binary_scale_enumerator]
-        if i <= 16 and i > 8:
+        if start_from_1 <= 16 and start_from_1 > 8:
             if broadcast_binary_list[i] == "1":
                 broadcast_address[1] = broadcast_address[1] + binary_scale[binary_scale_enumerator]
-        if i <= 24 and i > 16:
+        if start_from_1 <= 24 and start_from_1 > 16:
             if broadcast_binary_list[i] == "1":
                 broadcast_address[2] = broadcast_address[2] + binary_scale[binary_scale_enumerator]
-        if i <= 32 and i > 24:
+        if start_from_1 <= 32 and start_from_1 > 24:
             if broadcast_binary_list[i] == "1":
                 broadcast_address[3] = broadcast_address[3] + binary_scale[binary_scale_enumerator]
-        if i % 4 == 0:
-           binary_scale_enumerator = 0
+        if start_from_1 % 8 == 0:
+           binary_scale_enumerator = - 1
         binary_scale_enumerator = binary_scale_enumerator + 1
-            
+        start_from_1 = start_from_1 + 1
+        print(binary_scale_enumerator)
+    
+    #Reset the start_from_1 variable
+    start_from_1 = 1
     #Second the network address
-    for i, elem in enumerate (network_binary_list, 0):
-        if i <= 8:
+    for i, elem in enumerate (network_binary_list):
+        if start_from_1 <= 8:
             if network_binary_list[i] == "1":
                 network_address[0] = network_address[0] + binary_scale[binary_scale_enumerator]
-        if i <= 16 and i > 8:
+        if start_from_1 <= 16 and start_from_1 > 8:
             if network_binary_list[i] == "1":
                 network_address[1] = network_address[1] + binary_scale[binary_scale_enumerator]
-        if i <= 24 and i > 16:
+        if start_from_1 <= 24 and start_from_1 > 16:
             if network_binary_list[i] == "1":
                 network_address[2] = network_address[2] + binary_scale[binary_scale_enumerator]
-        if i <= 32 and i > 24:
+        if start_from_1 <= 32 and start_from_1 > 24:
             if network_binary_list[i] == "1":
                 network_address[3] = network_address[3] + binary_scale[binary_scale_enumerator]
-        if i % 4 == 0:
-           binary_scale_enumerator = 0
-        binary_scale_enumerator = binary_scale_enumerator + 1 
+        if start_from_1 % 8 == 0:
+           binary_scale_enumerator = - 1
+        binary_scale_enumerator = binary_scale_enumerator + 1
+        start_from_1 = start_from_1 + 1
+        print(binary_scale_enumerator)
 
     #Now that the lists are correct let us add the correct values to the first and last address        
-    first_address[0:2] = broadcast_address[0:2]
-    last_address[0:2] = network_address[0:2]
+    first_address[0:2] = network_address[0:2]
+    last_address[0:2] = broadcast_address[0:2]
     #The first three octets are gonna match the now accurate network and broadcast addresses, we just need to add or take away 1 respectively
     first_address[3] = network_address[3] + 1
     last_address[3] = broadcast_address[3] - 1
