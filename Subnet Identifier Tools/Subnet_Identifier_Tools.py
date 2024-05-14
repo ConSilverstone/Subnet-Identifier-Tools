@@ -2,7 +2,9 @@
 ####Initilise Variables####
 from math import remainder
 from pickle import APPEND #adding content on the end of lists
-from itertools import cycle #To help us cycle through lists of different lengths
+from itertools import cycle
+from socket import IPPROTO_IPV4
+from threading import local #To help us cycle through lists of different lengths
 
 classful_range = {"A": 126, "B": 191, "C": 223, "D": 239, "E": 255} #A dictonary containg the last usable address from the first octect to find the class type
 ipv4_list = [] #The user will change this by entering a ipv4 address they are trying to find information on
@@ -109,36 +111,32 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
     
     #Lets create a local string to store the ipv4 info that our user has put in to keep that users input.
     local_string_ip = ""
+    #Lets create a local ipv4_list that we can change the values in freely
+    local_ipv4_list = ipv4_list
     
     #Now we need to cycle through the users base 10 input to create a binary string that we can subnet with.
-    for i, elem in enumerate (ipv4_list):
+    for i, elem in enumerate (local_ipv4_list):
         for j, elem in enumerate (binary_scale):
-            if ipv4_list[i] - binary_scale[j] >= 0:
+            if local_ipv4_list[i] - binary_scale[j] >= 0:
                 local_string_ip = local_string_ip + "1"
-                ##Now we need to update the value in ipv4_list
-                ipv4_list[i] = ipv4_list[i] - binary_scale[j]
+                ##Now we need to update the value in local_ipv4_list
+                local_ipv4_list[i] = local_ipv4_list[i] - binary_scale[j]
                 
-            elif ipv4_list[i] - binary_scale[j] < 0:
+            elif local_ipv4_list[i] - binary_scale[j] < 0:
                 local_string_ip = local_string_ip + "0"
                 
             else: #A exception has happened and we need to notify of this.
                 print("There was a fault when trying to calculate the subnet address and it may not display correctly.")
     
-    print("local_string_ip: " + local_string_ip)
-
-    ##We have a section of this function up and coming that requires us to replace items in a string by creating a new one since they are immutable here is the function that is going to do that
-    def replace(string, position, character):
-        return string[:int(position)] + character + string[int(position)+1:]
-        
-    local_broadcast_string = local_string_ip
-    local_network_string = local_string_ip
-
-    for i in local_broadcast_string[cidr_mask - 1 : 32]:
-        replace(local_broadcast_string, local_broadcast_string[int(i)], "1")
-        
-    for i in local_network_string[cidr_mask -1 : 32]:
-        replace(local_network_string, local_network_string[int(i)], "0")
+    #Lets make our local broadcast and network strings
+    local_broadcast_string = local_string_ip[0: cidr_mask]
+    local_network_string = local_string_ip[0: cidr_mask]
+    remaining_bits = 32 - cidr_mask
     
+    for i in range (0, remaining_bits):
+        local_broadcast_string = local_broadcast_string + "1"
+        local_network_string = local_network_string + "0"
+
     #Now we need to take our cleaned local_x_strings and turn those binary values back into base 10
     #First the broadcast address    
     for i in local_broadcast_string [0 : 7]:
@@ -192,11 +190,11 @@ def total_hosts_math (total_hosts):
 ##Call Functions##And notify the user of what function they are on##
 ##print next line here so it only prints once##
 print("Thank you for using the Subnet Identifier Tool, please enter the IPv4 address you would like information on.")
-ip_input(ipv4_list)
+ip_input(ipv4_list) 
 print("Now please enter the subnet mask for the same network as the IPv4 address.")
 mask_input(mask_list)
-ip_class(class_type)
-cidr_math(cidr_mask)
+class_type = ip_class(class_type) #Set the value outside the function to with =
+cidr_mask = cidr_math(cidr_mask) #Set the value outside the function to with =
 subnet_addresses_math(broadcast_address, network_address, first_address, last_address)
 total_hosts_math(total_hosts_math)
 
