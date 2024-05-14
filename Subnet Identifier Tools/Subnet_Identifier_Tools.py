@@ -1,10 +1,7 @@
 ####The Mythical Gryphon / ConSilverstone####
 ####Initilise Variables####
-from math import remainder
 from pickle import APPEND #adding content on the end of lists
-from itertools import cycle
-from socket import IPPROTO_IPV4
-from threading import local #To help us cycle through lists of different lengths
+from itertools import cycle #To help us cycle through lists of different lengths
 
 classful_range = {"A": 126, "B": 191, "C": 223, "D": 239, "E": 255} #A dictonary containg the last usable address from the first octect to find the class type
 ipv4_list = [] #The user will change this by entering a ipv4 address they are trying to find information on
@@ -13,10 +10,10 @@ class_type = "" #A blank string that will be used to display the class of networ
 binary_scale = [128, 64, 32, 16, 8, 4, 2, 1] #our binary scale which we will use to convert to and from binary and base 10
 ##Calculated variables in functions##
 cidr_mask = 0
-broadcast_address = []
-network_address = []
-first_address = []
-last_address = []
+broadcast_address = [0,0,0,0]
+network_address = [0,0,0,0]
+first_address = [0,0,0,0]
+last_address = [0,0,0,0]
 total_hosts = 0
 
 ##Lets take input for the users IPv4 Address##
@@ -108,26 +105,26 @@ def cidr_math (cidr_mask):
 ######Everything above is working as intended######
 
 def subnet_addresses_math (broadcast_address, network_address, first_address, last_address):
-    
+
     #Lets create a local string to store the ipv4 info that our user has put in to keep that users input.
     local_string_ip = ""
-    #Lets create a local ipv4_list that we can change the values in freely
-    local_ipv4_list = ipv4_list
+    #Lets create a local ipv4_list that we can change the values in freely, need list() to copy the information not reference it
+    local_ipv4_list = list(ipv4_list)
     
     #Now we need to cycle through the users base 10 input to create a binary string that we can subnet with.
     for i, elem in enumerate (local_ipv4_list):
         for j, elem in enumerate (binary_scale):
+            
             if local_ipv4_list[i] - binary_scale[j] >= 0:
                 local_string_ip = local_string_ip + "1"
                 ##Now we need to update the value in local_ipv4_list
                 local_ipv4_list[i] = local_ipv4_list[i] - binary_scale[j]
-                
             elif local_ipv4_list[i] - binary_scale[j] < 0:
                 local_string_ip = local_string_ip + "0"
                 
             else: #A exception has happened and we need to notify of this.
                 print("There was a fault when trying to calculate the subnet address and it may not display correctly.")
-    
+                
     #Lets make our local broadcast and network strings
     local_broadcast_string = local_string_ip[0: cidr_mask]
     local_network_string = local_string_ip[0: cidr_mask]
@@ -137,34 +134,37 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
         local_broadcast_string = local_broadcast_string + "1"
         local_network_string = local_network_string + "0"
 
-    #Now we need to take our cleaned local_x_strings and turn those binary values back into base 10
+    #Now we need to take our local_x_strings and turn those binary values back into base 10
     #First the broadcast address    
     for i in local_broadcast_string [0 : 7]:
         if i == "1":
-            broadcast_address[0] = broadcast_address[0] + binary_scale[i]
+            broadcast_address[0] = broadcast_address[0] + binary_scale[int(i) - 1]
     for i in local_broadcast_string [8 : 15]:
         if i == "1":
-            broadcast_address[1] = broadcast_address[1] + binary_scale[i]
+            broadcast_address[1] = broadcast_address[1] + binary_scale[int(i) - 1]
     for i in local_broadcast_string [16 : 23]:
         if i == "1":
-            broadcast_address[2] = broadcast_address[2] + binary_scale[i]
+            broadcast_address[2] = broadcast_address[2] + binary_scale[int(i) - 1]
     for i in local_broadcast_string [24 : 31]:
         if i == "1":
-            broadcast_address[3] = broadcast_address[3] + binary_scale[i]
+            broadcast_address[3] = broadcast_address[3] + binary_scale[int(i) - 1]
     #Second the network address
     for i in local_network_string [0 : 7]:
         if i == "1":
-            network_address[0] = network_address[0] + binary_scale[i]
+            network_address[0] = network_address[0] + binary_scale[int(i) - 1]
     for i in local_network_string [8 : 15]:
         if i == "1":
-            network_address[1] = network_address[1] + binary_scale[i]
+            network_address[1] = network_address[1] + binary_scale[int(i) - 1]
     for i in local_network_string [16 : 23]:
         if i == "1":
-            network_address[2] = network_address[2] + binary_scale[i]
+            network_address[2] = network_address[2] + binary_scale[int(i) - 1]
     for i in local_network_string [24 : 31]:
         if i == "1":
-            network_address[3] = network_address[3] + binary_scale[i]       
+            network_address[3] = network_address[3] + binary_scale[int(i) - 1]       
     
+    print(network_address)
+    print(broadcast_address)
+
     #Now that the lists are correct let us add the correct values to the first and last address        
     first_address[0:2] == network_address[0:2]
     last_address[0:2] == network_address[0:2]
@@ -190,21 +190,22 @@ def total_hosts_math (total_hosts):
 ##Call Functions##And notify the user of what function they are on##
 ##print next line here so it only prints once##
 print("Thank you for using the Subnet Identifier Tool, please enter the IPv4 address you would like information on.")
-ip_input(ipv4_list) 
+ipv4_list = ip_input(ipv4_list)
 print("Now please enter the subnet mask for the same network as the IPv4 address.")
-mask_input(mask_list)
+mask_input = mask_input(mask_list)
 class_type = ip_class(class_type) #Set the value outside the function to with =
 cidr_mask = cidr_math(cidr_mask) #Set the value outside the function to with =
 subnet_addresses_math(broadcast_address, network_address, first_address, last_address)
-total_hosts_math(total_hosts_math)
+total_hosts = total_hosts_math(total_hosts)
 
 ####Finally we can display everything we have been working on!####
 print("Subnet Identification Information:")
-print("IPv4 Address: " + ipv4_list[0] + "." + ipv4_list[1] + "." + ipv4_list[2] + "." + ipv4_list[3])
-print("Mask: " + mask_list[0] + "." + mask_list[1] + "." + mask_list[2] + "." + mask_list[3])
-print("Cidr Notation: /" + cidr_mask)
-print("This IPv4 Network Address: " + network_address[0] + "." + network_address[1] + "." + network_address[2] + "." + network_address[3])
-print("This IPv4 Broadcast Address: " + broadcast_address[0] + "." + broadcast_address[1] + "." + broadcast_address[2] + "." + broadcast_address[3])
-print("Subnets first usable address: " + first_address[0] + "." + first_address[1] + "." + first_address[2] + "." + first_address[3])
-print("Subnets last usable address: " + last_address[0] + "." + last_address[1] + "." + last_address[2] + "." + last_address[3])
+print("IPv4 Address: " + str(ipv4_list[0]) + "." + str(ipv4_list[1]) + "." + str(ipv4_list[2]) + "." + str(ipv4_list[3]))
+print("Mask: " + str(mask_list[0]) + "." + str(mask_list[1]) + "." + str(mask_list[2]) + "." + str(mask_list[3]))
+print("Cidr Notation: /" + str(cidr_mask))
+print("This IPv4 Network Address: " + str(network_address[0]) + "." + str(network_address[1]) + "." + str(network_address[2]) + "." + str(network_address[3]))
+print("This IPv4 Broadcast Address: " + str(broadcast_address[0]) + "." + str(broadcast_address[1]) + "." + str(broadcast_address[2]) + "." + str(broadcast_address[3]))
+print("Subnets first usable address: " + str(first_address[0]) + "." + str(first_address[1]) + "." + str(first_address[2]) + "." + str(first_address[3]))
+print("Subnets last usable address: " + str(last_address[0]) + "." + str(last_address[1]) + "." + str(last_address[2]) + "." + str(last_address[3]))
+print("Total hosts usable in subnet: " + str(total_hosts))
 print("Thank you for using the Subnet_Identifier_Tool, happy building!")
