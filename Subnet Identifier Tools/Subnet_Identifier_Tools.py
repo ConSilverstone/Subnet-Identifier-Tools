@@ -134,7 +134,6 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
     for i in range (0, remaining_bits):
         local_broadcast_string = local_broadcast_string + "1"
         local_network_string = local_network_string + "0"
-    print(local_broadcast_string)
     #Now we need to take our local_x_strings and turn them into lists of binary numbers to convert back into base 10
     broadcast_binary_list = []
     network_binary_list = []
@@ -166,7 +165,6 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
            binary_scale_enumerator = - 1
         binary_scale_enumerator = binary_scale_enumerator + 1
         start_from_1 = start_from_1 + 1
-        print(binary_scale_enumerator)
     
     #Reset the start_from_1 variable
     start_from_1 = 1
@@ -188,11 +186,10 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
            binary_scale_enumerator = - 1
         binary_scale_enumerator = binary_scale_enumerator + 1
         start_from_1 = start_from_1 + 1
-        print(binary_scale_enumerator)
 
     #Now that the lists are correct let us add the correct values to the first and last address        
-    first_address[0:2] = network_address[0:2]
-    last_address[0:2] = broadcast_address[0:2]
+    first_address[0:3] = network_address[0:3]
+    last_address[0:3] = broadcast_address[0:3]
     #The first three octets are gonna match the now accurate network and broadcast addresses, we just need to add or take away 1 respectively
     first_address[3] = network_address[3] + 1
     last_address[3] = broadcast_address[3] - 1
@@ -228,10 +225,12 @@ print() #Want an empty space#
 print("Subnet Identification Information:")
 print("IPv4 Address: " + str(ipv4_list[0]) + "." + str(ipv4_list[1]) + "." + str(ipv4_list[2]) + "." + str(ipv4_list[3]))
 print("Mask: " + str(mask_list[0]) + "." + str(mask_list[1]) + "." + str(mask_list[2]) + "." + str(mask_list[3]))
+print("Class Type: " + class_type)
 print("Cidr Notation: /" + str(cidr_mask))
 print("This IPv4 Network Address: " + str(network_address[0]) + "." + str(network_address[1]) + "." + str(network_address[2]) + "." + str(network_address[3]))
 print("This IPv4 Broadcast Address: " + str(broadcast_address[0]) + "." + str(broadcast_address[1]) + "." + str(broadcast_address[2]) + "." + str(broadcast_address[3]))
 print("Subnets first usable address: " + str(first_address[0]) + "." + str(first_address[1]) + "." + str(first_address[2]) + "." + str(first_address[3]))
 print("Subnets last usable address: " + str(last_address[0]) + "." + str(last_address[1]) + "." + str(last_address[2]) + "." + str(last_address[3]))
 print("Total hosts usable in subnet: " + str(total_hosts))
+print()
 print("Thank you for using the Subnet_Identifier_Tool, happy building!")
