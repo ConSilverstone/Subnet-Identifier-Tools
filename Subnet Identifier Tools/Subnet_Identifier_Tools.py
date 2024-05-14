@@ -233,4 +233,4 @@ print("Subnets first usable address: " + str(first_address[0]) + "." + str(first
 print("Subnets last usable address: " + str(last_address[0]) + "." + str(last_address[1]) + "." + str(last_address[2]) + "." + str(last_address[3]))
 print("Total hosts usable in subnet: " + str(total_hosts))
 print()
-print("Thank you for using the Subnet_Identifier_Tool, happy building!")
+print(input("Thank you for using the Subnet_Identifier_Tool, happy building!"))
