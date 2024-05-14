@@ -60,7 +60,7 @@ def ip_class (class_type):
     
     #Lets create a local int containing the first octect of the user's ipv4 address so we can compare it to a class type
     local_int = ipv4_list[0]
-    
+
     #Now to compare
     if local_int < classful_range.get("A", "No Class Given"):
         class_type = "A"
@@ -97,12 +97,13 @@ def cidr_math (cidr_mask):
            if mask_list[i] - binary_scale[j] > 0:
                local_string_cidr = local_string_cidr + "1"
            else:
-               local_string_cidr = local_string_cidr + "0"
-   print(local_string_cidr)            
+               local_string_cidr = local_string_cidr + "0"          
     #Now take that local string and count for the cidr
    cidr_mask = local_string_cidr.count("1")
    
    return cidr_mask
+
+######Everything above is working as intended######
 
 def subnet_addresses_math (broadcast_address, network_address, first_address, last_address):
     
@@ -112,13 +113,19 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
     #Now we need to cycle through the users base 10 input to create a binary string that we can subnet with.
     for i, elem in enumerate (ipv4_list):
         for j, elem in enumerate (binary_scale):
-            if ipv4_list[i] - binary_scale[j] > 0:
+            if ipv4_list[i] - binary_scale[j] >= 0:
                 local_string_ip = local_string_ip + "1"
+                ##Now we need to update the value in ipv4_list
+                ipv4_list[i] = ipv4_list[i] - binary_scale[j]
+                
             elif ipv4_list[i] - binary_scale[j] < 0:
                 local_string_ip = local_string_ip + "0"
+                
             else: #A exception has happened and we need to notify of this.
                 print("There was a fault when trying to calculate the subnet address and it may not display correctly.")
     
+    print("local_string_ip: " + local_string_ip)
+
     ##We have a section of this function up and coming that requires us to replace items in a string by creating a new one since they are immutable here is the function that is going to do that
     def replace(string, position, character):
         return string[:int(position)] + character + string[int(position)+1:]
@@ -131,9 +138,6 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
         
     for i in local_network_string[cidr_mask -1 : 32]:
         replace(local_network_string, local_network_string[int(i)], "0")
-    
-    print(local_broadcast_string)
-    print(local_network_string)
     
     #Now we need to take our cleaned local_x_strings and turn those binary values back into base 10
     #First the broadcast address    
