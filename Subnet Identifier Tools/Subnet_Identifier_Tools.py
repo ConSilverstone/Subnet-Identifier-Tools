@@ -1,5 +1,6 @@
 ####The Mythical Gryphon / ConSilverstone####
 ####Initilise Variables####
+from operator import index
 from pickle import APPEND #adding content on the end of lists
 from itertools import cycle #To help us cycle through lists of different lengths
 
@@ -134,40 +135,55 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
         local_broadcast_string = local_broadcast_string + "1"
         local_network_string = local_network_string + "0"
 
-    #Now we need to take our local_x_strings and turn those binary values back into base 10
+    #Now we need to take our local_x_strings and turn them into lists of binary numbers to convert back into base 10
+    broadcast_binary_list = []
+    network_binary_list = []
+    for x in local_broadcast_string:
+        broadcast_binary_list.append(x)
+    for x in local_network_string:
+        network_binary_list.append(x)
+        
+    binary_scale_enumerator = 0
+
     #First the broadcast address    
-    for i in local_broadcast_string [0 : 7]:
-        if i == "1":
-            broadcast_address[0] = broadcast_address[0] + binary_scale[int(i) - 1]
-    for i in local_broadcast_string [8 : 15]:
-        if i == "1":
-            broadcast_address[1] = broadcast_address[1] + binary_scale[int(i) - 1]
-    for i in local_broadcast_string [16 : 23]:
-        if i == "1":
-            broadcast_address[2] = broadcast_address[2] + binary_scale[int(i) - 1]
-    for i in local_broadcast_string [24 : 31]:
-        if i == "1":
-            broadcast_address[3] = broadcast_address[3] + binary_scale[int(i) - 1]
+    for i, elem in enumerate (broadcast_binary_list, 0):
+        if i <= 8:
+            if broadcast_binary_list[i] == "1":
+                broadcast_address[0] = broadcast_address[0] + binary_scale[binary_scale_enumerator]
+        if i <= 16 and i > 8:
+            if broadcast_binary_list[i] == "1":
+                broadcast_address[1] = broadcast_address[1] + binary_scale[binary_scale_enumerator]
+        if i <= 24 and i > 16:
+            if broadcast_binary_list[i] == "1":
+                broadcast_address[2] = broadcast_address[2] + binary_scale[binary_scale_enumerator]
+        if i <= 32 and i > 24:
+            if broadcast_binary_list[i] == "1":
+                broadcast_address[3] = broadcast_address[3] + binary_scale[binary_scale_enumerator]
+        if i % 4 == 0:
+           binary_scale_enumerator = 0
+        binary_scale_enumerator = binary_scale_enumerator + 1
+            
     #Second the network address
-    for i in local_network_string [0 : 7]:
-        if i == "1":
-            network_address[0] = network_address[0] + binary_scale[int(i) - 1]
-    for i in local_network_string [8 : 15]:
-        if i == "1":
-            network_address[1] = network_address[1] + binary_scale[int(i) - 1]
-    for i in local_network_string [16 : 23]:
-        if i == "1":
-            network_address[2] = network_address[2] + binary_scale[int(i) - 1]
-    for i in local_network_string [24 : 31]:
-        if i == "1":
-            network_address[3] = network_address[3] + binary_scale[int(i) - 1]       
-    
-    print(network_address)
-    print(broadcast_address)
+    for i, elem in enumerate (network_binary_list, 0):
+        if i <= 8:
+            if network_binary_list[i] == "1":
+                network_address[0] = network_address[0] + binary_scale[binary_scale_enumerator]
+        if i <= 16 and i > 8:
+            if network_binary_list[i] == "1":
+                network_address[1] = network_address[1] + binary_scale[binary_scale_enumerator]
+        if i <= 24 and i > 16:
+            if network_binary_list[i] == "1":
+                network_address[2] = network_address[2] + binary_scale[binary_scale_enumerator]
+        if i <= 32 and i > 24:
+            if network_binary_list[i] == "1":
+                network_address[3] = network_address[3] + binary_scale[binary_scale_enumerator]
+        if i % 4 == 0:
+           binary_scale_enumerator = 0
+        binary_scale_enumerator = binary_scale_enumerator + 1 
 
     #Now that the lists are correct let us add the correct values to the first and last address        
-    first_address[0:2] == network_address[0:2]
-    last_address[0:2] == network_address[0:2]
+    first_address[0:2] = broadcast_address[0:2]
+    last_address[0:2] = network_address[0:2]
     #The first three octets are gonna match the now accurate network and broadcast addresses, we just need to add or take away 1 respectively
     first_address[3] = network_address[3] + 1
     last_address[3] = broadcast_address[3] - 1
@@ -199,6 +215,7 @@ subnet_addresses_math(broadcast_address, network_address, first_address, last_ad
 total_hosts = total_hosts_math(total_hosts)
 
 ####Finally we can display everything we have been working on!####
+print() #Want an empty space#
 print("Subnet Identification Information:")
 print("IPv4 Address: " + str(ipv4_list[0]) + "." + str(ipv4_list[1]) + "." + str(ipv4_list[2]) + "." + str(ipv4_list[3]))
 print("Mask: " + str(mask_list[0]) + "." + str(mask_list[1]) + "." + str(mask_list[2]) + "." + str(mask_list[3]))
