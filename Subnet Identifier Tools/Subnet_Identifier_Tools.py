@@ -1,7 +1,5 @@
 ####The Mythical Gryphon / ConSilverstone####
 ####Initilise Variables####
-from operator import index
-from pickle import APPEND #adding content on the end of lists
 from itertools import cycle #To help us cycle through lists of different lengths
 
 classful_range = {"A": 126, "B": 191, "C": 223, "D": 239, "E": 255} #A dictonary containg the last usable address from the first octect to find the class type
@@ -26,7 +24,7 @@ def ip_input (ipv4_list):
         print("Sorry but that was not a valid IPv4 address, a valid address should be between 8 and 16 characters in length (0.0.0.1 or 255.255.255.255) for example.")
         ip_input(ipv4_list)
     elif ipv4_string.count(".") != 3:
-        print("Sorry but that was not a valid IPv4 address, a valid address should have 4 full stops, one after every octet (192.168.1.0 or 127.16.0.0) for example")
+        print("Sorry but that was not a valid IPv4 address, a valid address should have 3 full stops, one after every octet (192.168.1.0 or 127.16.0.0) for example")
         ip_input(ipv4_list)
     else: #everything seems fine lets split the string into a list we can work with
         ipv4_string_cleaned = ipv4_string.split(".") ##Take the raw input and clean it up using the full stops
@@ -45,7 +43,7 @@ def mask_input (mask_list):
         print("Sorry but that was not a valid IPv4 mask, a valid mask should be between 8 and 16 characters in length (0.0.0.1 or 255.255.255.255) for example.")
         mask_input(mask_list)
     elif mask_string.count(".") != 3:
-        print("Sorry but that was not a valid IPv4 mask, a valid mask should have 4 full stops, one after every 4 numbers (255.0.0.0 or 255.255.255.0) for example")
+        print("Sorry but that was not a valid IPv4 mask, a valid mask should have 3 full stops, one after every 4 numbers (255.0.0.0 or 255.255.255.0) for example")
         mask_input(mask_list)
     else: #everything seems fine lets split the string into a list we can work with
         mask_string_cleaned = mask_string.split(".") ##Take the raw input and clean it up using the full stops
@@ -162,7 +160,7 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
             if broadcast_binary_list[i] == "1":
                 broadcast_address[3] = broadcast_address[3] + binary_scale[binary_scale_enumerator]
         if start_from_1 % 8 == 0:
-           binary_scale_enumerator = - 1
+           binary_scale_enumerator = -1
         binary_scale_enumerator = binary_scale_enumerator + 1
         start_from_1 = start_from_1 + 1
     
@@ -203,7 +201,7 @@ def subnet_addresses_math (broadcast_address, network_address, first_address, la
 def total_hosts_math (total_hosts):
     
     #Lets create local ints to do the math with
-    local_int = 32 - cidr_mask
+    local_int = 32 - cidr_mask #Give us the power, bits on host side.
     local_base_two = 2 #as bits grow in powers of two (on, off)
     
     total_hosts = (local_base_two ** local_int) - 2 #-2 for network and broadcast addresses
